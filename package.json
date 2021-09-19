@@ -1,0 +1,14 @@
+{
+  "name": "chat-application",
+  "version": "1.0.0",
+  "description": "chat application build with webSockets and express",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "websockets"
+  ],
+  "author": "erfanhanifezade@gmail.com",
+  "license": "ISC"
+}
