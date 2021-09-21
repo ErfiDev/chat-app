@@ -7,10 +7,33 @@
     <title>Chat App</title>
   </head>
   <body>
-    Chat app index
+    <form action="" id="form">
+      <input type="text" id="input" />
+      <button type="submit">Submit</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+
+      const form = document.getElementById("form");
+      const input = document.getElementById("input");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (input.value === "") {
+          return null;
+        } else {
+          socket.emit("chat", input.value);
+          input.value = "";
+        }
+      });
+
+      socket.on("user-count", (data) => {
+        const span = document.createElement("span");
+        const textNode = document.createTextNode(data);
+        span.appendChild(textNode);
+        document.body.append(span);
+      });
+    </script>
   </body>
-  <script src="./socket.io/socket.io.js"></script>
-  <script>
-    const socket = io();
-  </script>
 </html>
