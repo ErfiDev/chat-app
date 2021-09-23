@@ -13,8 +13,16 @@ nextApp.prepare().then(() => {
 
   io.on("connect", (socket) => {
     console.log("user connected");
-
+    let allRooms = [];
     socket.on("file-stream", (data) => console.log(data));
+
+    socket.on("new-room", (data) => {
+      console.log("new room: ", data);
+      allRooms.push(data);
+      socket.emit("message", "room created: ", data);
+
+      socket.on(data, (data) => console.log(data));
+    });
   });
 
   server.listen(3000, (err) => {

@@ -6,13 +6,14 @@ export default function About() {
   const [data, setData] = useState();
 
   function toServer() {
-    socket.emit("file-stream", data);
-    console.log("to server working");
+    socket.emit("new-room", data);
+    // socket.on("all-rooms", (data) => console.log(data));
+    socket.on("message", (data) => console.log(data));
   }
 
   return (
     <>
-      <input type="file" onChange={(e) => setData(e.target.value)} />
+      <input type="text" onChange={(e) => setData(e.target.value)} />
       <button onClick={toServer}>Click</button>
     </>
   );
