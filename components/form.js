@@ -1,9 +1,20 @@
-import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 export default function Form({ handleSubmit }) {
   const [username, setUsername] = useState("");
   const [room, setRoom] = useState("");
+  const router = useRouter();
+
+  function getRoom() {
+    if (!username || !room) {
+      return alert("please provide room and username input");
+    } else {
+      let usernameFix = username.trim().toLowerCase();
+      let roomFix = room.trim().toLowerCase();
+      router.push(`/room?username=${usernameFix}&room=${roomFix}`);
+    }
+  }
 
   return (
     <div className="w-screen h-screen flex justify-center items-center">
@@ -56,10 +67,9 @@ export default function Form({ handleSubmit }) {
             <button
               className="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
               type="button"
+              onClick={getRoom}
             >
-              <Link href={`/room?username=${username}&room=${room}`}>
-                Sign In
-              </Link>
+              Sign In
             </button>
           </div>
         </div>
