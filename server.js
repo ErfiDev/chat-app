@@ -12,17 +12,14 @@ nextApp.prepare().then(() => {
   });
 
   io.on("connect", (socket) => {
-    console.log("user connected");
-    let allRooms = [];
-    socket.on("file-stream", (data) => console.log(data));
+    socket.emit("users", `${socket.id} is connected`);
 
-    socket.on("new-room", (data) => {
-      console.log("new room: ", data);
-      allRooms.push(data);
-      socket.emit("message", "room created: ", data);
-
-      socket.on(data, (data) => console.log(data));
+    const chats = [];
+    socket.on("chat", (data) => {
+      chats.push(data);
     });
+
+    socket.emit("all-chats", chats);
   });
 
   server.listen(3000, (err) => {
