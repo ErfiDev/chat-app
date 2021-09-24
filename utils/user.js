@@ -39,4 +39,4 @@ function getUsersInRoom(room) {
   return filterUsers;
 }
 
-export { addUser, getUser, removeUser, getUsersInRoom };
+module.exports = { addUser, getUser, removeUser, getUsersInRoom };

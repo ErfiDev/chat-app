@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-export default function Form({ handleSubmit }) {
+export default function Form() {
   const [username, setUsername] = useState("");
   const [room, setRoom] = useState("");
   const router = useRouter();
@@ -18,10 +18,7 @@ export default function Form({ handleSubmit }) {
 
   return (
     <div className="w-screen h-screen flex justify-center items-center">
-      <form
-        onSubmit={(e) => handleSubmit(e)}
-        className="form-get-room w-3/4 flex flex-col justify-around items-center p-20"
-      >
+      <form className="form-get-room w-3/4 flex flex-col justify-around items-center p-20">
         <div className="md:flex md:items-center mb-6">
           <div className="md:w-1/3">
             <label
