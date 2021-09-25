@@ -20,3 +20,21 @@ body {
     -webkit-backdrop-filter: blur( 3px );
     border-radius: 10px;
 }
+
+.chat-inputs-container{
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    grid-template-rows: 1fr;
+
+    .chat-input {
+        outline: none;
+        border: none;
+        background-color: antiquewhite;
+        padding-left: 0.5rem;
+        &::placeholder {
+            color: black;
+            padding-left: 0.5rem;
+            letter-spacing: 1px; 
+        }
+    }
+}

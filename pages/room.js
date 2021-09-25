@@ -1,8 +1,10 @@
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Io from "socket.io-client";
+import ChatContainer from "comp/chatContainer";
 
 export default function Room() {
+  const [chats, setChats] = useState([]);
   const { query } = useRouter();
   const { username, room } = query;
   const socket = Io();
@@ -10,7 +12,7 @@ export default function Room() {
   useEffect(() => {
     socket.emit("join", { username, room });
     socket.on("message", (data) => {
-      console.log(data);
+      setChats(data);
     });
 
     return () => {
@@ -21,8 +23,23 @@ export default function Room() {
 
   return (
     <>
-      salam {username}
-      room {room}
+      <ChatContainer username={username} chats={chats} />
     </>
   );
+}
+
+export async function getServerSideProps({ query }) {
+  const { username, room } = query;
+
+  if (!username || !room) {
+    return {
+      notFound: true,
+    };
+  } else {
+    return {
+      props: {
+        auth: true,
+      },
+    };
+  }
 }
