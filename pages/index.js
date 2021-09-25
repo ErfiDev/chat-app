@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>joining to room</title>
+        <title>Joining to room</title>
       </Head>
       <Form />
     </>

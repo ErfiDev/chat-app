@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Io from "socket.io-client";
 import ChatContainer from "comp/chatContainer";
+import Head from "next/head";
 
 export default function Room() {
   const [chats, setChats] = useState([]);
@@ -23,6 +24,9 @@ export default function Room() {
 
   return (
     <>
+      <Head>
+        <title>Room {room}</title>
+      </Head>
       <ChatContainer username={username} chats={chats} />
     </>
   );
