@@ -12,28 +12,35 @@ nextApp.prepare().then(() => {
     return handle(req, res);
   });
 
-  io.on("connect", (socket) => {
+  io.on("connection", (socket) => {
     socket.on("join", ({ username, room }) => {
       const { error, user } = addUser({ id: socket.id, username, room });
 
-      if (error) return null;
+      if (error)
+        return socket.emit("systemError", "this username used please change!");
+      else {
+        socket.emit("message", {
+          user: "admin",
+          text: `${user.username} welcome to the ${user.room} room`,
+        });
 
-      socket.emit("message", {
-        user: "admin",
-        text: `${user.username} welcome to the ${user.room} room`,
-      });
-
-      socket.broadcast.to(user.room).emit("message", {
-        user: "admin",
-        text: `${user.username}, has joined!`,
-      });
-      socket.join(user.room);
+        socket.join(room);
+        socket.broadcast.to(user.room).emit("message", {
+          user: "admin",
+          text: `${user.username}, has joined!`,
+        });
+      }
     });
 
-    socket.on("sendMessage", (message) => {
-      const user = getUser(socket.id);
+    socket.on("sendMessage", ({ message, username }) => {
+      const { error, user } = getUser(username);
 
-      io.to(user.room).emit("message", { user: user.username, text: message });
+      if (error) return socket.emit("systemError", "can't find this user!");
+      else {
+        socket.broadcast
+          .to(user.room)
+          .emit("message", { user: user.username, text: message });
+      }
     });
 
     socket.on("disconnect", () => {

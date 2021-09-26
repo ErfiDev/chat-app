@@ -4,21 +4,21 @@ function addUser({ id, username, room }) {
   let condition = users.find((item) => item.username === username);
 
   if (condition) {
-    return { error: "this username already used!" };
+    return { error: "this username already used!", user: null };
   }
 
   users.push({ id, username, room });
-  return { user: { id, username, room } };
+  return { user: { id, username, room }, error: null };
 }
 
-function getUser(id) {
-  const find = users.find((item) => item.id === id);
+function getUser(username) {
+  const find = users.find((item) => item.username === username);
 
   if (!find) {
-    return { error: "this user not found!" };
+    return { error: "this user not found!", user: null };
   }
 
-  return { user: find };
+  return { user: find, error: null };
 }
 
 function removeUser(id) {
