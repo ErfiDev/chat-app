@@ -4,7 +4,7 @@ import Io from "socket.io-client";
 import Head from "next/head";
 import { toast } from "react-toastify";
 
-export default function Room() {
+function Room() {
   const [chats, setChats] = useState([]);
   const [data, setData] = useState("");
   const { query, push } = useRouter();
@@ -21,25 +21,30 @@ export default function Room() {
 
   useEffect(() => {
     socket.emit("join", { username, room });
+    document.cookie = `username=${username};`;
 
     socket.on("systemError", (msg) => {
       toast.error(msg, {
         position: "bottom-left",
         closeOnClick: true,
       });
+      document.cookie = `username= ;`;
       push("/");
-    });
-
-    socket.on("message", (msg) => {
-      setChats([...chats, msg]);
-      console.log(msg);
     });
 
     return () => {
       socket.emit("dis", username);
       socket.disconnect();
       socket.off();
+      document.cookie = `username= ;`;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [room, username]);
+
+  useEffect(() => {
+    socket.on("message", (msg) => {
+      setChats((ch) => [msg, ...ch]);
+    });
   }, []);
 
   return (
@@ -53,7 +58,13 @@ export default function Room() {
             <span className="ml-5">{username}</span>
             <span className="mr-5 cursor-pointer">close</span>
           </header>
-          <div className="w-full min-h-1/2 bg-white"></div>
+          <div className="w-full min-h-1/2 bg-white flex flex-col justify-start items-start">
+            {chats.map((item) => (
+              <span className="block m-2" key={Math.random()}>
+                {item.user}: {item.text}
+              </span>
+            ))}
+          </div>
           <div className="chat-inputs-container w-full h-10 bg-blue-500">
             <input
               type="text"
@@ -85,3 +96,5 @@ export async function getServerSideProps({ query }) {
     };
   }
 }
+
+export default Room;
