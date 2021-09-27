@@ -15,6 +15,7 @@ export default function Room() {
     if (!data) return null;
     else {
       socket.emit("sendMessage", { message: data, username });
+      setData("");
     }
   }
 
@@ -35,7 +36,9 @@ export default function Room() {
     });
 
     return () => {
+      socket.emit("dis", username);
       socket.disconnect();
+      socket.off();
     };
   }, []);
 

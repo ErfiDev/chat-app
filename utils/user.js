@@ -21,8 +21,8 @@ function getUser(username) {
   return { user: find, error: null };
 }
 
-function removeUser(id) {
-  const findIndex = users.findIndex((item) => item.id === id);
+function removeUser(username) {
+  const findIndex = users.findIndex((item) => item.username === username);
 
   if (findIndex !== -1) {
     users.splice(findIndex, 1);
@@ -33,10 +33,10 @@ function getUsersInRoom(room) {
   const filterUsers = users.filter((item) => item.room === room);
 
   if (filterUsers.length <= 0) {
-    return { error: "not found!" };
+    return { error: "not found!", length: null };
   }
 
-  return filterUsers;
+  return { error: null, length: filterUsers.length };
 }
 
 module.exports = { addUser, getUser, removeUser, getUsersInRoom };
