@@ -16,7 +16,6 @@ function MyApp({ Component, pageProps }) {
       if (!usernameCookie) return null;
       else {
         socket.emit("dis", usernameCookie);
-        document.cookie = `username= ;`;
       }
     };
   }, []);

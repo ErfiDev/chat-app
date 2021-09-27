@@ -43,7 +43,7 @@ function Room() {
 
   useEffect(() => {
     socket.on("message", (msg) => {
-      setChats((ch) => [msg, ...ch]);
+      setChats((ch) => [...ch, msg]);
     });
   }, []);
 
@@ -58,12 +58,14 @@ function Room() {
             <span className="ml-5">{username}</span>
             <span className="mr-5 cursor-pointer">close</span>
           </header>
-          <div className="w-full min-h-1/2 bg-white flex flex-col justify-start items-start">
-            {chats.map((item) => (
-              <span className="block m-2" key={Math.random()}>
-                {item.user}: {item.text}
-              </span>
-            ))}
+          <div className="w-full min-h-1/2 bg-white chat-whitboard">
+            <ul className="w-full h-full flex m-0 p-0 flex-col justify-start items-start">
+              {chats.map((item) => (
+                <li className="m-2" key={Math.random()}>
+                  {item.user} : {item.text}
+                </li>
+              ))}
+            </ul>
           </div>
           <div className="chat-inputs-container w-full h-10 bg-blue-500">
             <input
