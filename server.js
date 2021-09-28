@@ -5,12 +5,7 @@ const dev = process.env.NODE_ENV !== "production";
 const nextApp = next({ dev });
 const handle = nextApp.getRequestHandler();
 const io = require("socket.io")(server);
-const {
-  addUser,
-  getUser,
-  getUsersInRoom,
-  removeUser,
-} = require("./utils/user");
+const { addUser, getUser, logger, removeUser } = require("./utils/user");
 
 nextApp.prepare().then(() => {
   app.get("*", (req, res) => {
@@ -50,6 +45,7 @@ nextApp.prepare().then(() => {
 
     socket.on("dis", (username) => {
       removeUser(username);
+      logger();
     });
   });
 
