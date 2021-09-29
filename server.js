@@ -44,8 +44,17 @@ nextApp.prepare().then(() => {
     });
 
     socket.on("dis", (username) => {
-      removeUser(username);
-      logger();
+      let { error, user } = getUser(username);
+      if (error) {
+        socket.emit("systemError", "can't find user!");
+      } else {
+        removeUser(username);
+        logger();
+        socket.broadcast.to(user.room).emit("message", {
+          user: "admin",
+          text: `${user.username} has left the room!`,
+        });
+      }
     });
   });
 
