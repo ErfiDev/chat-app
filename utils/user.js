@@ -39,8 +39,4 @@ function getUsersInRoom(room) {
   return { error: null, length: filterUsers.length };
 }
 
-function logger() {
-  return console.log(users);
-}
-
-module.exports = { logger, addUser, getUser, removeUser, getUsersInRoom };
+module.exports = { addUser, getUser, removeUser, getUsersInRoom };
