@@ -34,8 +34,6 @@ function Room() {
 
     return () => {
       socket.emit("dis", username);
-      socket.disconnect();
-      socket.off();
       document.cookie = `username= ;`;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -56,7 +54,9 @@ function Room() {
         <div className="w-9/12 min-h-1/2 flex flex-col justify-between items-center bg-white">
           <header className="w-full h-10 bg-blue-500 flex justify-between items-center">
             <span className="ml-5">{username}</span>
-            <span className="mr-5 cursor-pointer">close</span>
+            <span onClick={() => push("/")} className="mr-5 cursor-pointer">
+              close
+            </span>
           </header>
           <div className="w-full min-h-1/2 bg-white chat-whitboard">
             <ul className="w-full h-full flex m-0 p-0 flex-col justify-start items-start">
