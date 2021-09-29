@@ -74,6 +74,7 @@ function Room() {
               className="chat-input"
               value={data}
               onChange={(e) => setData(e.target.value)}
+              onKeyPress={(e) => (e.key === "Enter" ? handleSend() : null)}
             />
             <button onClick={handleSend}>Send</button>
           </div>
