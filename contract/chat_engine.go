@@ -9,4 +9,5 @@ type ChatEngine interface {
 	Listener()
 	broadcast(m *models.Message)
 	sendNotification(m *models.SysMessage)
+	Quit()
 }
