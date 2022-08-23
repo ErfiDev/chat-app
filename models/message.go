@@ -8,4 +8,5 @@ type Message struct {
 
 type SysMessage struct {
 	Data string `json:"data"`
+	Room string `json:"room"`
 }
