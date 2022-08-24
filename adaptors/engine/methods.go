@@ -26,8 +26,10 @@ func (en *Engine) handleEvent(e *models.Event) {
 			room.Users = append(room.Users, usr)
 
 			en.sendNotification(&models.SysMessage{
-				Data: fmt.Sprintf("user %s joined to room!", usr.Uname),
-				Room: room.Name,
+				Data:  fmt.Sprintf("user %s joined to room!", usr.Uname),
+				Room:  room.Name,
+				Uname: usr.Uname,
+				Type:  constant.JoinEvent,
 			})
 		}
 
@@ -43,8 +45,10 @@ func (en *Engine) handleEvent(e *models.Event) {
 
 		room.Users = users
 		en.sendNotification(&models.SysMessage{
-			Data: fmt.Sprintf("user %s leaved the room", e.Uname),
-			Room: room.Name,
+			Data:  fmt.Sprintf("user %s leaved the room", e.Uname),
+			Room:  room.Name,
+			Uname: e.Uname,
+			Type:  constant.LeaveEvent,
 		})
 
 	default:
