@@ -1,13 +1,15 @@
 package contract
 
-import "github.com/ErfiDev/chat-app/models"
+import (
+	"github.com/ErfiDev/chat-app/dto"
+)
 
 type ChatEngine interface {
-	handleEvent(e *models.Event)
-	SendEvent(e *models.Event)
-	SendMessage(m *models.Message)
+	handleEvent(e *dto.Event)
+	SendEvent(e *dto.Event)
+	SendMessage(m *dto.Message)
 	Listener()
-	broadcast(m *models.Message)
-	sendNotification(m *models.SysMessage)
+	broadcast(m *dto.Message)
+	sendNotification(m *dto.SysMessage)
 	Quit()
 }

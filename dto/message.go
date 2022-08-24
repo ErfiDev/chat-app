@@ -1,4 +1,4 @@
-package models
+package dto
 
 type Message struct {
 	From string `json:"from"`

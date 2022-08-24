@@ -3,6 +3,7 @@ package delivery
 import (
 	"encoding/json"
 	"github.com/ErfiDev/chat-app/constant"
+	"github.com/ErfiDev/chat-app/dto"
 	"github.com/ErfiDev/chat-app/models"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/websocket/v2"
@@ -13,11 +14,13 @@ func Connect() fiber.Handler {
 		uname := c.Params("uname")
 		room := c.Params("room")
 
-		joinReq := models.Event{
+		joinReq := dto.Event{
 			Type:  constant.JoinEvent,
-			Uname: uname,
 			Rname: room,
-			Conn:  c,
+			User: &models.User{
+				Uname: uname,
+				Conn:  c,
+			},
 		}
 
 		chatEngine.SendEvent(&joinReq)
@@ -30,18 +33,20 @@ func Connect() fiber.Handler {
 
 			switch t {
 			case websocket.CloseMessage:
-				event := models.Event{
+				event := dto.Event{
 					Type:  constant.LeaveEvent,
-					Uname: uname,
 					Rname: room,
-					Conn:  c,
+					User: &models.User{
+						Uname: uname,
+						Conn:  c,
+					},
 				}
 
 				chatEngine.SendEvent(&event)
 				return
 
 			default:
-				var msg models.Message
+				var msg dto.Message
 				err := json.Unmarshal(bytes, &msg)
 				if err != nil {
 					return

@@ -3,40 +3,32 @@ package engine
 import (
 	"fmt"
 	"github.com/ErfiDev/chat-app/constant"
+	"github.com/ErfiDev/chat-app/dto"
 	"github.com/ErfiDev/chat-app/models"
 	"log"
 )
 
-func (en *Engine) handleEvent(e *models.Event) {
+func (en *Engine) handleEvent(e *dto.Event) {
 	switch e.Type {
 	case constant.JoinEvent:
 		room := en.findRoom(e.Rname)
 		if room == nil {
 			r := en.createRoom(e.Rname)
-			usr := &models.User{
-				Uname: e.Uname,
-				Conn:  e.Conn,
-			}
 
-			r.Users = append(r.Users, usr)
+			r.Users = append(r.Users, e.User)
 		} else {
-			usr := &models.User{
-				Uname: e.Uname,
-				Conn:  e.Conn,
-			}
-
-			ok := en.findUserInRoom(e.Rname, usr.Uname)
+			ok := en.findUserInRoom(e.Rname, e.User.Uname)
 			if ok {
 				log.Println("Username is used, change it!")
 				return
 			}
 
-			room.Users = append(room.Users, usr)
+			room.Users = append(room.Users, e.User)
 
-			en.sendNotification(&models.SysMessage{
-				Data:  fmt.Sprintf("user %s joined to room!", usr.Uname),
+			en.sendNotification(&dto.SysMessage{
+				Data:  fmt.Sprintf("user %s joined to room!", e.User.Uname),
 				Room:  room.Name,
-				Uname: usr.Uname,
+				Uname: e.User.Uname,
 				Type:  constant.JoinEvent,
 			})
 		}
@@ -46,16 +38,16 @@ func (en *Engine) handleEvent(e *models.Event) {
 		var users []*models.User
 
 		for _, u := range room.Users {
-			if u.Uname != e.Uname {
+			if u.Uname != e.User.Uname {
 				users = append(users, u)
 			}
 		}
 
 		room.Users = users
-		en.sendNotification(&models.SysMessage{
-			Data:  fmt.Sprintf("user %s leaved the room", e.Uname),
+		en.sendNotification(&dto.SysMessage{
+			Data:  fmt.Sprintf("user %s leaved the room", e.User.Uname),
 			Room:  room.Name,
-			Uname: e.Uname,
+			Uname: e.User.Uname,
 			Type:  constant.LeaveEvent,
 		})
 
@@ -64,15 +56,15 @@ func (en *Engine) handleEvent(e *models.Event) {
 	}
 }
 
-func (en *Engine) SendEvent(e *models.Event) {
+func (en *Engine) SendEvent(e *dto.Event) {
 	en.events <- e
 }
 
-func (en *Engine) SendMessage(m *models.Message) {
+func (en *Engine) SendMessage(m *dto.Message) {
 	en.messages <- m
 }
 
-func (en *Engine) broadcast(m *models.Message) {
+func (en *Engine) broadcast(m *dto.Message) {
 	room := en.findRoom(m.Room)
 	if room == nil {
 		en.logger.Println("room not found: ", room.Name)
@@ -87,7 +79,7 @@ func (en *Engine) broadcast(m *models.Message) {
 	}
 }
 
-func (en *Engine) sendNotification(m *models.SysMessage) {
+func (en *Engine) sendNotification(m *dto.SysMessage) {
 	room := en.findRoom(m.Room)
 	if room == nil {
 		en.logger.Println("room not found: ", room.Name)

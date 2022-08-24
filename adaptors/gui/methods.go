@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/ErfiDev/chat-app/constant"
-	"github.com/ErfiDev/chat-app/models"
+	"github.com/ErfiDev/chat-app/dto"
 	"github.com/jroimartin/gocui"
 	"strings"
 )
@@ -55,7 +55,7 @@ func (c *Client) SendMessage(g *gocui.Gui, v *gocui.View) error {
 		v.Clear()
 		return nil
 	}
-	message := models.Message{
+	message := dto.Message{
 		From: c.uname,
 		Room: c.rname,
 		Data: v.Buffer(),
@@ -74,8 +74,8 @@ func (c *Client) SendMessage(g *gocui.Gui, v *gocui.View) error {
 
 func (c *Client) ReceiveMsg() {
 	for {
-		msg := &models.Message{}
-		sysMsg := &models.SysMessage{}
+		msg := &dto.Message{}
+		sysMsg := &dto.SysMessage{}
 
 		_, bytes, err := c.conn.ReadMessage()
 		if err != nil {
