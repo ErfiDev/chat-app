@@ -4,7 +4,7 @@ func (en *Engine) Listener() {
 	for {
 		select {
 		case m := <-en.messages:
-			en.SendMessage(m)
+			en.broadcast(m)
 
 		case e := <-en.events:
 			en.handleEvent(e)
