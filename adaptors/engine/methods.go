@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/ErfiDev/chat-app/constant"
 	"github.com/ErfiDev/chat-app/models"
+	"log"
 )
 
 func (en *Engine) handleEvent(e *models.Event) {
@@ -23,6 +24,13 @@ func (en *Engine) handleEvent(e *models.Event) {
 				Uname: e.Uname,
 				Conn:  e.Conn,
 			}
+
+			ok := en.findUserInRoom(e.Rname, usr.Uname)
+			if ok {
+				log.Println("Username is used, change it!")
+				return
+			}
+
 			room.Users = append(room.Users, usr)
 
 			en.sendNotification(&models.SysMessage{
@@ -119,4 +127,19 @@ func (en *Engine) createRoom(name string) *models.Room {
 func (en *Engine) Quit() {
 	ch := make(chan error)
 	en.quit <- ch
+}
+
+func (en *Engine) findUserInRoom(room string, uname string) bool {
+	r := en.findRoom(room)
+	if r == nil {
+		return false
+	}
+
+	for _, u := range r.Users {
+		if u.Uname == uname {
+			return true
+		}
+	}
+
+	return false
 }
