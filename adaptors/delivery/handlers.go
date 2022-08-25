@@ -54,9 +54,7 @@ func Connect(chatEngine *engine.Engine) fiber.Handler {
 				}
 
 				if msg.From != "" {
-					if msg.From == uname {
-						chatEngine.SendMessage(&msg)
-					}
+					chatEngine.SendMessage(&msg)
 				}
 			}
 		}

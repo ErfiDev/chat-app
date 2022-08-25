@@ -7,6 +7,7 @@ import (
 	"github.com/ErfiDev/chat-app/dto"
 	"github.com/jroimartin/gocui"
 	"strings"
+	"time"
 )
 
 func (c *Client) Layout(g *gocui.Gui) error {
@@ -94,16 +95,16 @@ func (c *Client) ReceiveMsg() {
 		c.Update(func(g *gocui.Gui) error {
 			if msg.From != "" {
 				view, _ := c.View("messages")
-				fmt.Fprint(view, msg.Data)
+				fmt.Fprint(view, fmt.Sprintf("%s: %s", time.Kitchen, msg.Data))
 
 				return nil
-			} else if sysMsg.Room != "" {
+			} else if sysMsg.Uname != "" {
 				switch sysMsg.Type {
 				case constant.JoinEvent:
 					view, _ := c.View("messages")
 					viewUsers, _ := c.View("users")
 					fmt.Fprintf(view, sysMsg.Data)
-					fmt.Fprintf(viewUsers, sysMsg.Uname)
+					fmt.Fprintf(viewUsers, fmt.Sprintf("%s\n", sysMsg.Uname))
 					return nil
 
 				case constant.LeaveEvent:
