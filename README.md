@@ -20,7 +20,8 @@ simple project with websockets, users can join to the rooms and chat with others
 
 - Go,Docker,Docker compose & Make should be pre-installed.
 - Clone the repository: `git clone https://github.com/erfidev/chat-app`.
-- Run the command `make run_server` (this will start the docker containers).
+- Run the command `make build_server` (this will build the server Dockerfile).
+- Run the command `make run_server` (this command run the server image).
 - Run the command `docker ps` to ensure server container started.
 - Open a new terminal & run the command `make build_client` to build the client.
 - run the client binary and enjoy!
