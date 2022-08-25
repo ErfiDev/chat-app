@@ -9,9 +9,9 @@ simple project with websockets, users can join to the rooms and chat with others
 ---
 
 - Api-server built using [Go-fiber](https://gofiber.io/).
-- [Websocket](https://github.com/fasthttp/websocket) as websocket pkg.
+- [FastHttp](https://github.com/fasthttp/websocket) as websocket pkg.
 - [Docker](https://docker.com/) for running application.
-- [Gui](https://github.com/jroimartin/gocui) command line ui.
+- [Gocui](https://github.com/jroimartin/gocui) command line ui.
 - [uuid](https://github.com/google/uuid) google uuid.
 
 ## Installation & setup :-
