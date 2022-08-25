@@ -1,11 +1,11 @@
 package gui
 
 import (
-	"github.com/ErfiDev/chat-app/contract"
+	"github.com/fasthttp/websocket"
 	"github.com/jroimartin/gocui"
 )
 
-func New(uname, rname string, conn contract.WsConn) (*Client, error) {
+func New(uname, rname string, conn *websocket.Conn) (*Client, error) {
 	gui, err := gocui.NewGui(gocui.OutputNormal)
 	if err != nil {
 		return &Client{}, err
