@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	chatEngine := engine.New("./app.log")
+	chatEngine := engine.New("./engine.log")
 
 	go chatEngine.Listener()
 
