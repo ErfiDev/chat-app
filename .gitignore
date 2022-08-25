@@ -11,4 +11,4 @@ build/
 .env
 .vscode/
 .idea/
-.log
+*.log
