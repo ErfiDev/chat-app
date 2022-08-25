@@ -2,6 +2,7 @@ package delivery
 
 import (
 	"encoding/json"
+	"github.com/ErfiDev/chat-app/adaptors/engine"
 	"github.com/ErfiDev/chat-app/constant"
 	"github.com/ErfiDev/chat-app/dto"
 	"github.com/ErfiDev/chat-app/models"
@@ -9,12 +10,12 @@ import (
 	"github.com/gofiber/websocket/v2"
 )
 
-func Connect() fiber.Handler {
+func Connect(chatEngine *engine.Engine) fiber.Handler {
 	return websocket.New(func(c *websocket.Conn) {
 		uname := c.Params("uname")
 		room := c.Params("room")
 
-		joinReq := dto.Event{
+		joinReq := &dto.Event{
 			Type:  constant.JoinEvent,
 			Rname: room,
 			User: &models.User{
@@ -23,7 +24,7 @@ func Connect() fiber.Handler {
 			},
 		}
 
-		chatEngine.SendEvent(&joinReq)
+		chatEngine.SendEvent(joinReq)
 
 		for {
 			t, bytes, err := c.ReadMessage()
@@ -33,7 +34,7 @@ func Connect() fiber.Handler {
 
 			switch t {
 			case websocket.CloseMessage:
-				event := dto.Event{
+				event := &dto.Event{
 					Type:  constant.LeaveEvent,
 					Rname: room,
 					User: &models.User{
@@ -42,7 +43,7 @@ func Connect() fiber.Handler {
 					},
 				}
 
-				chatEngine.SendEvent(&event)
+				chatEngine.SendEvent(event)
 				return
 
 			default:

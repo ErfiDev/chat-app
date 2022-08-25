@@ -5,17 +5,17 @@ func (en *Engine) Listener() {
 		select {
 		case m := <-en.messages:
 			en.broadcast(m)
+			return
 
 		case e := <-en.events:
 			en.handleEvent(e)
+			return
 
 		case <-en.quit:
 			close(en.messages)
 			close(en.events)
 			close(en.quit)
 			return
-
-		default:
 		}
 	}
 }

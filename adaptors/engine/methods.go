@@ -5,7 +5,6 @@ import (
 	"github.com/ErfiDev/chat-app/constant"
 	"github.com/ErfiDev/chat-app/dto"
 	"github.com/ErfiDev/chat-app/models"
-	"log"
 )
 
 func (en *Engine) handleEvent(e *dto.Event) {
@@ -14,23 +13,26 @@ func (en *Engine) handleEvent(e *dto.Event) {
 		room := en.findRoom(e.Rname)
 		if room == nil {
 			r := en.createRoom(e.Rname)
-
 			r.Users = append(r.Users, e.User)
-		} else {
-			ok := en.findUserInRoom(e.Rname, e.User.Uname)
-			if ok {
-				log.Println("Username is used, change it!")
-				return
-			}
-
-			room.Users = append(room.Users, e.User)
 
 			en.sendNotification(&dto.SysMessage{
-				Data:  fmt.Sprintf("user %s joined to room!", e.User.Uname),
-				Room:  room.Name,
+				Data:  fmt.Sprintf("user %s joined to room!\n", e.User.Uname),
+				Room:  e.Rname,
 				Uname: e.User.Uname,
 				Type:  constant.JoinEvent,
 			})
+		} else {
+			ok := en.findUserInRoom(e.Rname, e.User.Uname)
+			if !ok {
+				room.Users = append(room.Users, e.User)
+
+				en.sendNotification(&dto.SysMessage{
+					Data:  fmt.Sprintf("user %s joined to room!\n", e.User.Uname),
+					Room:  e.Rname,
+					Uname: e.User.Uname,
+					Type:  constant.JoinEvent,
+				})
+			}
 		}
 
 	case constant.LeaveEvent:
@@ -45,13 +47,11 @@ func (en *Engine) handleEvent(e *dto.Event) {
 
 		room.Users = users
 		en.sendNotification(&dto.SysMessage{
-			Data:  fmt.Sprintf("user %s leaved the room", e.User.Uname),
+			Data:  fmt.Sprintf("user %s leaved the room!\n", e.User.Uname),
 			Room:  room.Name,
 			Uname: e.User.Uname,
 			Type:  constant.LeaveEvent,
 		})
-
-	default:
 
 	}
 }
@@ -67,7 +67,7 @@ func (en *Engine) SendMessage(m *dto.Message) {
 func (en *Engine) broadcast(m *dto.Message) {
 	room := en.findRoom(m.Room)
 	if room == nil {
-		en.logger.Println("room not found: ", room.Name)
+		en.logger.Println("Room not found: ", m.Room)
 		return
 	}
 

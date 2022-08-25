@@ -9,13 +9,13 @@ import (
 func New(logOutput string) *Engine {
 	file := tools.LoadFile(logOutput)
 
-	e := Engine{
+	e := &Engine{
 		messages: make(chan *dto.Message),
 		events:   make(chan *dto.Event),
 		quit:     make(chan chan error),
-		rooms:    []*models.Room{},
+		rooms:    make([]*models.Room, 0),
 		logger:   tools.NewLogger(file),
 	}
 
-	return &e
+	return e
 }
