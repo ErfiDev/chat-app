@@ -7,6 +7,7 @@ import (
 
 type Client struct {
 	*gocui.Gui
+	id    string
 	uname string
 	rname string
 	conn  *websocket.Conn

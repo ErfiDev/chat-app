@@ -2,12 +2,11 @@ package gui
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/ErfiDev/chat-app/constant"
 	"github.com/ErfiDev/chat-app/dto"
 	"github.com/jroimartin/gocui"
-	"strings"
-	"time"
 )
 
 func (c *Client) Layout(g *gocui.Gui) error {
@@ -59,7 +58,7 @@ func (c *Client) SendMessage(g *gocui.Gui, v *gocui.View) error {
 	message := dto.Message{
 		From: c.uname,
 		Room: c.rname,
-		Data: v.Buffer(),
+		Data: fmt.Sprintf("%s: %s", c.uname, v.Buffer()),
 	}
 
 	err := c.conn.WriteJSON(&message)
@@ -95,30 +94,23 @@ func (c *Client) ReceiveMsg() {
 		c.Update(func(g *gocui.Gui) error {
 			if msg.From != "" {
 				view, _ := c.View("messages")
-				fmt.Fprint(view, fmt.Sprintf("%s: %s", time.Kitchen, msg.Data))
+				fmt.Fprint(view, msg.Data)
 
 				return nil
-			} else if sysMsg.Uname != "" {
-				switch sysMsg.Type {
-				case constant.JoinEvent:
+			} else if sysMsg.Room != "" {
+				if sysMsg.Type == constant.UsernameUsed {
+					g.Close()
+					return errors.New(sysMsg.Data)
+				} else {
 					view, _ := c.View("messages")
 					viewUsers, _ := c.View("users")
-					fmt.Fprintf(view, sysMsg.Data)
-					fmt.Fprintf(viewUsers, fmt.Sprintf("%s\n", sysMsg.Uname))
-					return nil
 
-				case constant.LeaveEvent:
-					view, _ := c.View("messages")
-					viewUsers, _ := c.View("users")
-					fmt.Fprintf(view, sysMsg.Data)
+					fmt.Fprint(view, sysMsg.Data)
+					viewUsers.Clear()
+					fmt.Fprint(viewUsers, sysMsg.Users)
 
-					buf := viewUsers.Buffer()
-					newBuf := strings.Replace(buf, sysMsg.Uname, "", 1)
-					fmt.Fprintf(viewUsers, newBuf)
 					return nil
 				}
-
-				return nil
 			}
 
 			return nil

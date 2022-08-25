@@ -5,7 +5,7 @@ import (
 	"github.com/jroimartin/gocui"
 )
 
-func New(uname, rname string, conn *websocket.Conn) (*Client, error) {
+func New(uname, rname, id string, conn *websocket.Conn) (*Client, error) {
 	gui, err := gocui.NewGui(gocui.OutputNormal)
 	if err != nil {
 		return &Client{}, err
@@ -16,6 +16,7 @@ func New(uname, rname string, conn *websocket.Conn) (*Client, error) {
 		uname: uname,
 		rname: rname,
 		conn:  conn,
+		id:    id,
 	}
 
 	return &cl, nil

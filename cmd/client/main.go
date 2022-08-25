@@ -6,9 +6,12 @@ import (
 	"github.com/ErfiDev/chat-app/adaptors/gui"
 	"github.com/ErfiDev/chat-app/constant"
 	"github.com/fasthttp/websocket"
+	"github.com/google/uuid"
 	"github.com/jroimartin/gocui"
 	"log"
 )
+
+var uu = uuid.New()
 
 func main() {
 	var uname, rname string
@@ -21,7 +24,9 @@ func main() {
 		log.Fatalln("username and room flag required")
 	}
 
-	url := fmt.Sprintf("ws://localhost%s/connect/%s/%s", constant.PORT, rname, uname)
+	id := uu.String()
+
+	url := fmt.Sprintf("ws://localhost%s/connect/%s/%s/%s", constant.PORT, rname, uname, id)
 
 	conn, resp, err := websocket.DefaultDialer.Dial(url, nil)
 	if err != nil {
@@ -31,7 +36,7 @@ func main() {
 	defer conn.Close()
 	defer resp.Body.Close()
 
-	ui, err := gui.New(uname, rname, conn)
+	ui, err := gui.New(uname, rname, id, conn)
 	if err != nil {
 		log.Fatalf("gui init error: %s", err)
 	}

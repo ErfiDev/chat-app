@@ -5,6 +5,7 @@ import (
 )
 
 type User struct {
+	ID    string
 	Uname string
 	Conn  *websocket.Conn
 }

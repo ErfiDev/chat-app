@@ -14,6 +14,7 @@ func Connect(chatEngine *engine.Engine) fiber.Handler {
 	return websocket.New(func(c *websocket.Conn) {
 		uname := c.Params("uname")
 		room := c.Params("room")
+		id := c.Params("id")
 
 		joinReq := &dto.Event{
 			Type:  constant.JoinEvent,
@@ -21,41 +22,32 @@ func Connect(chatEngine *engine.Engine) fiber.Handler {
 			User: &models.User{
 				Uname: uname,
 				Conn:  c,
+				ID:    id,
 			},
 		}
 
 		chatEngine.SendEvent(joinReq)
 
 		for {
-			t, bytes, err := c.ReadMessage()
+			_, bytes, err := c.ReadMessage()
 			if err != nil {
-				return
-			}
-
-			switch t {
-			case websocket.CloseMessage:
-				event := &dto.Event{
+				chatEngine.SendEvent(&dto.Event{
 					Type:  constant.LeaveEvent,
 					Rname: room,
 					User: &models.User{
+						ID:    id,
 						Uname: uname,
 						Conn:  c,
 					},
-				}
-
-				chatEngine.SendEvent(event)
+				})
 				return
+			}
 
-			default:
-				var msg dto.Message
-				err := json.Unmarshal(bytes, &msg)
-				if err != nil {
-					return
-				}
+			var msg dto.Message
+			_ = json.Unmarshal(bytes, &msg)
 
-				if msg.From != "" {
-					chatEngine.SendMessage(&msg)
-				}
+			if msg.From == uname {
+				chatEngine.SendMessage(&msg)
 			}
 		}
 	})

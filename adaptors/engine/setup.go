@@ -13,7 +13,7 @@ func New(logOutput string) *Engine {
 		messages: make(chan *dto.Message),
 		events:   make(chan *dto.Event),
 		quit:     make(chan chan error),
-		rooms:    make([]*models.Room, 0),
+		rooms:    []*models.Room{},
 		logger:   tools.NewLogger(file),
 	}
 

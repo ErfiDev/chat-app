@@ -9,6 +9,7 @@ require (
 	github.com/fasthttp/websocket v1.5.0 // indirect
 	github.com/gofiber/fiber/v2 v2.36.0 // indirect
 	github.com/gofiber/websocket/v2 v2.0.24 // indirect
+	github.com/google/uuid v1.3.0 // indirect
 	github.com/klauspost/compress v1.15.9 // indirect
 	github.com/mattn/go-runewidth v0.0.13 // indirect
 	github.com/nsf/termbox-go v1.1.1 // indirect

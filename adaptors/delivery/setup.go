@@ -9,7 +9,7 @@ import (
 func Setup(en *engine.Engine) {
 	r := fiber.New()
 
-	r.Get("/connect/:room/:uname", Connect(en))
+	r.Get("/connect/:room/:uname/:id", Connect(en))
 
 	err := r.Listen(constant.PORT)
 	if err != nil {

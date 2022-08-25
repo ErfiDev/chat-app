@@ -16,43 +16,58 @@ func (en *Engine) handleEvent(e *dto.Event) {
 			r.Users = append(r.Users, e.User)
 
 			en.sendNotification(&dto.SysMessage{
-				Data:  fmt.Sprintf("user %s joined to room!\n", e.User.Uname),
+				Data:  fmt.Sprintf("sys_msg): %s joined to room!\n", e.User.Uname),
 				Room:  e.Rname,
-				Uname: e.User.Uname,
+				Users: en.usersList(r),
 				Type:  constant.JoinEvent,
 			})
+			return
+
 		} else {
 			ok := en.findUserInRoom(e.Rname, e.User.Uname)
 			if !ok {
 				room.Users = append(room.Users, e.User)
 
 				en.sendNotification(&dto.SysMessage{
-					Data:  fmt.Sprintf("user %s joined to room!\n", e.User.Uname),
+					Data:  fmt.Sprintf("sys_msg): %s joined to room!\n", e.User.Uname),
 					Room:  e.Rname,
-					Uname: e.User.Uname,
+					Users: en.usersList(room),
 					Type:  constant.JoinEvent,
 				})
+			} else {
+				msg := &dto.SysMessage{
+					Data:  fmt.Sprintf("username %s is used, change it and try again!", e.User.Uname),
+					Room:  e.Rname,
+					Users: "",
+					Type:  constant.UsernameUsed,
+				}
+
+				e.User.Conn.WriteJSON(msg)
 			}
 		}
 
 	case constant.LeaveEvent:
 		room := en.findRoom(e.Rname)
 		var users []*models.User
+		status := false
 
 		for _, u := range room.Users {
-			if u.Uname != e.User.Uname {
+			if u.ID != e.User.ID {
 				users = append(users, u)
+			} else {
+				status = true
 			}
 		}
 
 		room.Users = users
-		en.sendNotification(&dto.SysMessage{
-			Data:  fmt.Sprintf("user %s leaved the room!\n", e.User.Uname),
-			Room:  room.Name,
-			Uname: e.User.Uname,
-			Type:  constant.LeaveEvent,
-		})
-
+		if status {
+			en.sendNotification(&dto.SysMessage{
+				Data:  fmt.Sprintf("sys_msg): %s leaved the room!\n", e.User.Uname),
+				Room:  room.Name,
+				Users: en.usersList(room),
+				Type:  constant.LeaveEvent,
+			})
+		}
 	}
 }
 
@@ -134,4 +149,13 @@ func (en *Engine) findUserInRoom(room string, uname string) bool {
 	}
 
 	return false
+}
+
+func (en *Engine) usersList(r *models.Room) string {
+	users := ""
+	for _, u := range r.Users {
+		users += fmt.Sprintf("%s\n", u.Uname)
+	}
+
+	return users
 }
