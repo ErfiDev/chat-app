@@ -26,7 +26,7 @@ simple project with websockets, users can join to the rooms and chat with others
 - Open a new terminal & run the command `make build_client` to build the client.
 - run the client binary and enjoy!
 
-# Contributing beers:
+# Contributing:
 
 ---
 
